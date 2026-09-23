@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SalesApp.ViewModels.Shop"
+             xmlns:models="clr-namespace:SalesApp.Models.Shop"
+             x:Class="SalesApp.Views.Shop.CartPage"
+             x:DataType="vm:CartViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="*,Auto">
+        
+        <!-- Sepet Doluysa: Ürün Listesi -->
+        <ScrollView Grid.Row="0" Margin="16,12">
+            <VerticalStackLayout Spacing="12">
+                
+                <!-- Boş Sepet Uyarısı -->
+                <VerticalStackLayout IsVisible="{Binding IsCartEmpty}"
+                                     Spacing="12"
+                                     HorizontalOptions="Center"
+                                     VerticalOptions="Center"
+                                     Margin="0,60,0,0">
+                    <Label Text="🛒" FontSize="64" HorizontalOptions="Center" />
+                    <Label Text="Sepetiniz Boş" FontAttributes="Bold" FontSize="18" HorizontalOptions="Center" />
+                    <Label Text="Henüz sepetinize bir ürün eklemediniz." TextColor="#9CA3AF" HorizontalOptions="Center" />
+                </VerticalStackLayout>
+
+                <!-- Sepetteki Ürünler -->
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding CartItems}" Spacing="10">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="models:CartItem">
+                            <Border StrokeShape="RoundRectangle 12"
+                                    StrokeThickness="0"
+                                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                                    Padding="12">
+                                <Border.Shadow>
+                                    <Shadow Brush="#000000" Opacity="0.06" Radius="6" Offset="0,2" />
+                                </Border.Shadow>
+                                <Grid ColumnDefinitions="70,*,Auto" ColumnSpacing="12">
+                                    
+                                    <!-- Ürün Görseli -->
+                                    <Image Grid.Column="0"
+                                           Source="{Binding Product.ImageUrl}"
+                                           Aspect="AspectFill"
+                                           HeightRequest="70"
+                                           WidthRequest="70" />
+
+                                    <!-- Ürün Bilgisi -->
+                                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                                        <Label Text="{Binding Product.Name}" FontAttributes="Bold" FontSize="13" LineBreakMode="TailTruncation" MaxLines="2" />
+                                        <Label Text="{Binding Product.Price, StringFormat='{0:N2} ₺'}" TextColor="#4F46E5" FontAttributes="Bold" FontSize="13" />
+                                    </VerticalStackLayout>
+
+                                    <!-- Adet Kontrolleri (+ / -) ve Silme -->
+                                    <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" Spacing="6" HorizontalOptions="End">
+                                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                            <Button Text="-"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CartViewModel}}, Path=DecrementQuantityCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    WidthRequest="32" HeightRequest="32" Padding="0" CornerRadius="6" />
+                                            <Label Text="{Binding Quantity}" FontAttributes="Bold" VerticalOptions="Center" HorizontalTextAlignment="Center" WidthRequest="20" />
+                                            <Button Text="+"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CartViewModel}}, Path=IncrementQuantityCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    WidthRequest="32" HeightRequest="32" Padding="0" CornerRadius="6" />
+                                        </HorizontalStackLayout>
+
+                                        <Button Text="🗑️ Sil"
+                                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CartViewModel}}, Path=RemoveItemCommand}"
+                                                CommandParameter="{Binding .}"
+                                                BackgroundColor="Transparent"
+                                                TextColor="#EF4444"
+                                                FontSize="11"
+                                                HeightRequest="26"
+                                                Padding="0" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+
+                <!-- Kupon Kodu Alanı -->
+                <Border StrokeShape="RoundRectangle 10"
+                        StrokeThickness="1"
+                        Stroke="#E5E7EB"
+                        BackgroundColor="{AppThemeBinding Light=#FAFAFA, Dark=#27272A}"
+                        Margin="0,8,0,0"
+                        Padding="8"
+                        IsVisible="{Binding HasItems}">
+                    <VerticalStackLayout Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Entry Grid.Column="0"
+                                   Text="{Binding CouponCode}"
+                                   Placeholder="İndirim Kodu (Örn: CLASS20)"
+                                   VerticalOptions="Center" />
+                            <Button Grid.Column="1"
+                                    Text="Uygula"
+                                    Command="{Binding ApplyCouponCommand}"
+                                    CornerRadius="6"
+                                    HeightRequest="40" />
+                        </Grid>
+                        <Label Text="{Binding CouponMessage}" TextColor="#10B981" FontSize="11" IsVisible="{Binding HasCouponMessage}" />
+                    </VerticalStackLayout>
+                </Border>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Alt Sabit Özet Kartı ve Sipariş Butonu -->
+        <Border Grid.Row="1"
+                StrokeShape="RoundRectangle 16,16,0,0"
+                StrokeThickness="0"
+                BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                Padding="20,16"
+                IsVisible="{Binding HasItems}">
+            <Border.Shadow>
+                <Shadow Brush="#000000" Opacity="0.12" Radius="12" Offset="0,-4" />
+            </Border.Shadow>
+            <VerticalStackLayout Spacing="10">
+                <!-- Fiyat Detayları -->
+                <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+                    <Label Grid.Row="0" Grid.Column="0" Text="Ara Toplam" TextColor="#6B7280" FontSize="12" />
+                    <Label Grid.Row="0" Grid.Column="1" Text="{Binding Subtotal, StringFormat='{0:N2} ₺'}" FontSize="12" />
+
+                    <Label Grid.Row="1" Grid.Column="0" Text="İndirim Tutarı" TextColor="#10B981" FontSize="12" />
+                    <Label Grid.Row="1" Grid.Column="1" Text="{Binding DiscountAmount, StringFormat='-{0:N2} ₺'}" TextColor="#10B981" FontSize="12" />
+
+                    <Label Grid.Row="2" Grid.Column="0" Text="Kargo Ücreti" TextColor="#6B7280" FontSize="12" />
+                    <Label Grid.Row="2" Grid.Column="1" Text="{Binding ShippingFee, StringFormat='{0:N2} ₺'}" FontSize="12" />
+                </Grid>
+
+                <BoxView HeightRequest="1" Color="#E5E7EB" Margin="0,2" />
+
+                <!-- Toplam ve Buton -->
+                <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="Genel Toplam" TextColor="#9CA3AF" FontSize="11" />
+                        <Label Text="{Binding Total, StringFormat='{0:N2} ₺'}" TextColor="#4F46E5" FontAttributes="Bold" FontSize="20" />
+                    </VerticalStackLayout>
+
+                    <Button Grid.Column="1"
+                            Text="Siparişi Onayla ➔"
+                            Command="{Binding CheckoutCommand}"
+                            BackgroundColor="#4F46E5"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            Padding="20,0"
+                            HeightRequest="46" />
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+    </Grid>
+
+</ContentPage>

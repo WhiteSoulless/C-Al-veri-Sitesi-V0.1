@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SalesApp.ViewModels.Settings"
+             x:Class="SalesApp.Views.Settings.SettingsPage"
+             x:DataType="vm:SettingsViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView Margin="16,12">
+        <VerticalStackLayout Spacing="16">
+            
+            <!-- 1. Kullanıcı Profil Kartı -->
+            <Border StrokeShape="RoundRectangle 14"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                    Padding="16">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.08" Radius="8" Offset="0,2" />
+                </Border.Shadow>
+                <Grid ColumnDefinitions="60,*" ColumnSpacing="12">
+                    <Border Grid.Column="0"
+                            StrokeShape="RoundRectangle 30"
+                            WidthRequest="60"
+                            HeightRequest="60"
+                            BackgroundColor="#EEF2FF"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                        <Label Text="👤" FontSize="28" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="4">
+                        <Label Text="{Binding UserFullName}" FontAttributes="Bold" FontSize="16" />
+                        <Label Text="{Binding UserPhone}" TextColor="#6B7280" FontSize="13" />
+                        <Label Text="✅ Telefon Doğrulandı" TextColor="#10B981" FontSize="11" FontAttributes="Bold" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Border>
+
+            <!-- 2. Görünüm Ayarları (Tema) -->
+            <Border StrokeShape="RoundRectangle 14"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                    Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Görünüm" FontAttributes="Bold" FontSize="14" TextColor="#4F46E5" />
+                    
+                    <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="Karanlık Mod (Dark Mode)" FontAttributes="Bold" FontSize="13" />
+                            <Label Text="Gözleri yormayan koyu tema" TextColor="#9CA3AF" FontSize="11" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" IsToggled="{Binding IsDarkMode}" OnColor="#4F46E5" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 3. Para Birimi Tercihi -->
+            <Border StrokeShape="RoundRectangle 14"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                    Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Bölgesel Ayarlar" FontAttributes="Bold" FontSize="14" TextColor="#4F46E5" />
+                    
+                    <Label Text="Para Birimi" FontAttributes="Bold" FontSize="13" />
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                        <Button Grid.Column="0"
+                                Text="₺ (TL)"
+                                Command="{Binding SelectCurrencyCommand}"
+                                CommandParameter="₺"
+                                CornerRadius="8"
+                                HeightRequest="40" />
+                        <Button Grid.Column="1"
+                                Text="$ (USD)"
+                                Command="{Binding SelectCurrencyCommand}"
+                                CommandParameter="$"
+                                CornerRadius="8"
+                                HeightRequest="40" />
+                        <Button Grid.Column="2"
+                                Text="€ (EUR)"
+                                Command="{Binding SelectCurrencyCommand}"
+                                CommandParameter="€"
+                                CornerRadius="8"
+                                HeightRequest="40" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 4. Bildirim ve İletişim Tercihleri -->
+            <Border StrokeShape="RoundRectangle 14"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                    Padding="16">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Bildirimler &amp; İletişim" FontAttributes="Bold" FontSize="14" TextColor="#4F46E5" />
+                    
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="Uygulama Bildirimleri" FontAttributes="Bold" FontSize="13" />
+                            <Label Text="Kampanya ve sipariş anlık bildirimleri" TextColor="#9CA3AF" FontSize="11" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" IsToggled="{Binding IsNotificationsEnabled}" OnColor="#4F46E5" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="#F3F4F6" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="SMS ile Bilgilendirme" FontAttributes="Bold" FontSize="13" />
+                            <Label Text="Kargo ve güvenlik kodları için SMS izni" TextColor="#9CA3AF" FontSize="11" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" IsToggled="{Binding IsSmsEnabled}" OnColor="#4F46E5" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- 5. Çıkış Yap Butonu -->
+            <Button Text="Oturumu Kapat 🚪"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#FEE2E2"
+                    TextColor="#DC2626"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="48"
+                    Margin="0,8,0,24" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

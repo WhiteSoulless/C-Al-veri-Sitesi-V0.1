@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SalesApp.ViewModels.Shop"
+             xmlns:models="clr-namespace:SalesApp.Models.Shop"
+             x:Class="SalesApp.Views.Shop.HomePage"
+             x:DataType="vm:HomeViewModel"
+             Title="{Binding Title}">
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
+        
+        <!-- 1. İnternet Bağlantısı Yok Uyarısı (Offline Banner) -->
+        <Border Grid.Row="0"
+                IsVisible="{Binding IsOffline}"
+                BackgroundColor="#FFEBEE"
+                Stroke="#EF5350"
+                StrokeThickness="1"
+                Margin="12,8"
+                Padding="12,8"
+                StrokeShape="RoundRectangle 8">
+            <HorizontalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text="⚠️ İnternet bağlantısı yok. Bazı özellikler kısıtlı olabilir."
+                       TextColor="#C62828"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Border>
+
+        <!-- 2. Arama Çubuğu -->
+        <Border Grid.Row="1"
+                Margin="16,8"
+                Padding="12,4"
+                BackgroundColor="{AppThemeBinding Light=#F5F5F7, Dark=#2C2C2E}"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 12">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Label Grid.Column="0" Text="🔍" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0" />
+                <Entry Grid.Column="1"
+                       Text="{Binding SearchQuery}"
+                       Placeholder="Ürün veya kategori ara..."
+                       ReturnCommand="{Binding SearchCommand}"
+                       ClearButtonVisibility="WhileEditing"
+                       VerticalOptions="Center" />
+                <Button Grid.Column="2"
+                        Text="Ara"
+                        Command="{Binding SearchCommand}"
+                        CornerRadius="8"
+                        Padding="12,4"
+                        HeightRequest="36" />
+            </Grid>
+        </Border>
+
+        <!-- 3. Kategori Seçici (Yatay Liste) -->
+        <ScrollView Grid.Row="2" Orientation="Horizontal" HorizontalScrollBarVisibility="Never" Margin="16,4,16,12">
+            <HorizontalStackLayout BindableLayout.ItemsSource="{Binding Categories}" Spacing="10">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:Category">
+                        <Border BackgroundColor="{AppThemeBinding Light=#EEF2FF, Dark=#312E81}"
+                                Stroke="#4F46E5"
+                                StrokeThickness="1"
+                                StrokeShape="RoundRectangle 20"
+                                Padding="16,8">
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=SelectCategoryCommand}"
+                                                      CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="6">
+                                <Label Text="{Binding Name}"
+                                       TextColor="{AppThemeBinding Light=#4F46E5, Dark=#E0E7FF}"
+                                       FontAttributes="Bold"
+                                       FontSize="13" />
+                                <Label Text="{Binding ProductCount, StringFormat='({0})'}"
+                                       TextColor="#9CA3AF"
+                                       FontSize="12" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </HorizontalStackLayout>
+        </ScrollView>
+
+        <!-- 4. Ürün Listesi (Kart Tasarımı) -->
+        <CollectionView Grid.Row="3"
+                        ItemsSource="{Binding Products}"
+                        Margin="16,0"
+                        SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="12" VerticalItemSpacing="12" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Product">
+                    <Border StrokeShape="RoundRectangle 14"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                            Padding="8">
+                        <Border.Shadow>
+                            <Shadow Brush="#000000" Opacity="0.08" Radius="8" Offset="0,4" />
+                        </Border.Shadow>
+                        <VerticalStackLayout Spacing="6">
+                            <!-- Ürün Görseli -->
+                            <Image Source="{Binding ImageUrl}"
+                                   Aspect="AspectFill"
+                                   HeightRequest="130"
+                                   WidthRequest="160" />
+
+                            <!-- Kategori ve Puan -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="{Binding CategoryName}" TextColor="#9CA3AF" FontSize="11" />
+                                <Label Grid.Column="1" Text="{Binding Rating, StringFormat='⭐ {0:F1}'}" TextColor="#F59E0B" FontSize="11" FontAttributes="Bold" />
+                            </Grid>
+
+                            <!-- Ürün Adı -->
+                            <Label Text="{Binding Name}"
+                                   FontAttributes="Bold"
+                                   FontSize="13"
+                                   LineBreakMode="TailTruncation"
+                                   MaxLines="2" />
+
+                            <!-- Fiyatlar -->
+                            <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                <Label Text="{Binding Price, StringFormat='{0:N2} ₺'}"
+                                       TextColor="#4F46E5"
+                                       FontAttributes="Bold"
+                                       FontSize="14" />
+                                <Label Text="{Binding OriginalPrice, StringFormat='{0:N2} ₺'}"
+                                       TextColor="#9CA3AF"
+                                       TextDecorations="Strikethrough"
+                                       FontSize="11"
+                                       IsVisible="{Binding HasDiscount}"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
+                            <!-- Sepete Ekle Butonu -->
+                            <Button Text="Sepete Ekle 🛒"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type vm:HomeViewModel}}, Path=QuickAddToCartCommand}"
+                                    CommandParameter="{Binding .}"
+                                    BackgroundColor="#4F46E5"
+                                    TextColor="White"
+                                    FontSize="12"
+                                    CornerRadius="8"
+                                    HeightRequest="36"
+                                    Padding="0" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+    </Grid>
+
+</ContentPage>

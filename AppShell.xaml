@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="SalesApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:shop="clr-namespace:SalesApp.Views.Shop"
+    xmlns:settings="clr-namespace:SalesApp.Views.Settings"
+    xmlns:auth="clr-namespace:SalesApp.Views.Auth"
+    Title="Class Alışveriş">
+
+    <TabBar>
+        <Tab Title="Vitrin" Route="HomePage">
+            <ShellContent ContentTemplate="{DataTemplate shop:HomePage}" />
+        </Tab>
+        <Tab Title="Sepetim" Route="CartPage">
+            <ShellContent ContentTemplate="{DataTemplate shop:CartPage}" />
+        </Tab>
+        <Tab Title="Ayarlar" Route="SettingsPage">
+            <ShellContent ContentTemplate="{DataTemplate settings:SettingsPage}" />
+        </Tab>
+    </TabBar>
+
+    <ShellContent
+        Route="LoginPage"
+        ContentTemplate="{DataTemplate auth:LoginPage}" />
+
+    <ShellContent
+        Route="OtpPage"
+        ContentTemplate="{DataTemplate auth:OtpPage}" />
+
+</Shell>

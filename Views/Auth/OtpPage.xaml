@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SalesApp.ViewModels.Auth"
+             x:Class="SalesApp.Views.Auth.OtpPage"
+             x:DataType="vm:OtpViewModel"
+             Title="{Binding Title}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20" VerticalOptions="Center">
+            
+            <Label Text="📱" FontSize="56" HorizontalOptions="Center" />
+            <Label Text="SMS Kodunu Giriniz" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" />
+            
+            <Label Text="{Binding PhoneNumber, StringFormat='{0} numaralı telefonunuza gönderilen 6 haneli güvenlik kodunu giriniz.'}"
+                   TextColor="#6B7280"
+                   FontSize="13"
+                   HorizontalTextAlignment="Center" />
+
+            <!-- Test Kodu Bilgi Kartı -->
+            <Border StrokeShape="RoundRectangle 8"
+                    BackgroundColor="#EFF6FF"
+                    Stroke="#3B82F6"
+                    StrokeThickness="1"
+                    Padding="12,8">
+                <Label Text="{Binding TestCode, StringFormat='🧪 Geliştirici Test Kodu: {0}'}"
+                       TextColor="#1E40AF"
+                       FontSize="13"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center" />
+            </Border>
+
+            <!-- 6 Haneli Kod Girişi -->
+            <Border StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1"
+                    Stroke="#4F46E5"
+                    Padding="16,4"
+                    HeightRequest="56"
+                    WidthRequest="220"
+                    HorizontalOptions="Center">
+                <Entry Text="{Binding Code}"
+                       Placeholder="• • • • • •"
+                       Keyboard="Numeric"
+                       MaxLength="6"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       HorizontalTextAlignment="Center"
+                       VerticalOptions="Center" />
+            </Border>
+
+            <!-- Doğrula Butonu -->
+            <Button Text="Doğrula ve Giriş Yap ➔"
+                    Command="{Binding VerifyCodeCommand}"
+                    BackgroundColor="#4F46E5"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="10"
+                    HeightRequest="48" />
+
+            <!-- Tekrar Gönder -->
+            <HorizontalStackLayout Spacing="6" HorizontalOptions="Center">
+                <Label Text="Kod gelmedi mi?" TextColor="#9CA3AF" FontSize="12" VerticalOptions="Center" />
+                <Button Text="Tekrar Gönder"
+                        Command="{Binding ResendCodeCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="#4F46E5"
+                        FontSize="12"
+                        FontAttributes="Bold"
+                        Padding="0" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

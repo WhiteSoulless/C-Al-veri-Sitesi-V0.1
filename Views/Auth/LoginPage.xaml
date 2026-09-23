@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:SalesApp.ViewModels.Auth"
+             x:Class="SalesApp.Views.Auth.LoginPage"
+             x:DataType="vm:LoginViewModel"
+             Shell.NavBarIsVisible="False">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="20" VerticalOptions="Center">
+            
+            <!-- Logo & Başlık -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center" Margin="0,20,0,10">
+                <Border StrokeShape="RoundRectangle 35"
+                        WidthRequest="70"
+                        HeightRequest="70"
+                        BackgroundColor="#4F46E5"
+                        HorizontalOptions="Center">
+                    <Label Text="🛍️" FontSize="36" HorizontalOptions="Center" VerticalOptions="Center" />
+                </Border>
+                <Label Text="Class Alışveriş" FontAttributes="Bold" FontSize="24" HorizontalOptions="Center" TextColor="#4F46E5" />
+                <Label Text="Giriş yapın ve alışverişe hemen başlayın" TextColor="#9CA3AF" FontSize="13" HorizontalOptions="Center" />
+            </VerticalStackLayout>
+
+            <!-- Form Alanı -->
+            <Border StrokeShape="RoundRectangle 16"
+                    StrokeThickness="0"
+                    BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#1C1C1E}"
+                    Padding="20">
+                <Border.Shadow>
+                    <Shadow Brush="#000000" Opacity="0.08" Radius="10" Offset="0,4" />
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="16">
+                    
+                    <!-- Telefon Girişi -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Telefon Numarası" FontAttributes="Bold" FontSize="13" />
+                        <Border StrokeShape="RoundRectangle 10"
+                                StrokeThickness="1"
+                                Stroke="#E5E7EB"
+                                Padding="12,0"
+                                HeightRequest="48">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Label Grid.Column="0" Text="🇹🇷 +90" TextColor="#6B7280" VerticalOptions="Center" Margin="0,0,8,0" FontAttributes="Bold" />
+                                <Entry Grid.Column="1"
+                                       Text="{Binding PhoneNumber}"
+                                       Placeholder="5XX XXX XX XX"
+                                       Keyboard="Telephone"
+                                       MaxLength="10"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- SMS Kodu Butonu -->
+                    <Button Text="SMS Doğrulama Kodu Gönder 📩"
+                            Command="{Binding SendSmsCodeCommand}"
+                            BackgroundColor="#4F46E5"
+                            TextColor="White"
+                            FontAttributes="Bold"
+                            CornerRadius="10"
+                            HeightRequest="48" />
+
+                    <Label Text="Telefonunuza 6 haneli tek kullanımlık güvenlik kodu (OTP) gönderilecektir."
+                           TextColor="#9CA3AF"
+                           FontSize="11"
+                           HorizontalTextAlignment="Center" />
+
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Misafir Devam Et -->
+            <Button Text="Giriş Yapmadan Devam Et ➔"
+                    Clicked="OnGuestClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="#6B7280"
+                    FontSize="13" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
